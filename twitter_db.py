@@ -3,6 +3,7 @@
 import sqlite3 as sqlite
 import re
 
+
 class twitter_db:
 
     """
@@ -55,6 +56,9 @@ class twitter_db:
             res = self.con.execute("select count(*) as cnt from tweets order by id where user_id='%s'" % (user_id))
         return res.fetchone()[0]
 
+    def get_tweets(self, user_id=None, limit=10000):
+        return self.con.execute("select * from tweets order by id limit %d" % (limit)).fetchall()
+
     def print_users(self):
         res = self.con.execute("select * from users order by id").fetchall()
         for item in res:
@@ -66,6 +70,9 @@ class twitter_db:
     def count_uers(self):
         res = self.con.execute("select count(*) as cnt from users order by id")
         return res.fetchone()[0]
+
+    def get_users(self, limit=10000):
+        return self.con.execute("select * from users order by id limit %d" % (limit)).fetchall()
 
     # -----------------------------------------------------------------------
     # search
@@ -217,7 +224,7 @@ class twitter_db:
                 verified integer,\
                 protected integer)")
             self.con.commit()
-        except:
+        except UnicodeDecodeError:
             print('create table failed')
 
     def clear_tables(self):
