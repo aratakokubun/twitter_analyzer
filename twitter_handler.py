@@ -37,16 +37,21 @@ class twitter_handler():
             self.access_key = self.config.get(self.target, 'access_key')
             self.access_secret = self.config.get(self.target, 'access_secret')
         except UnicodeDecodeError:
-            print "Could not read config file : %s" % self.config_file
+            print ("Could not read config file : %s" % self.config_file)
+            sys.exit()
 
     # Do twitter outhentification
     def do_oauth(self):
-        # create ouath handler
-        self.auth = tweepy.OAuthHandler(self.consumer_key, self.consumer_secret);
-        # set access token to oauth handler
-        self.auth.set_access_token(self.access_key, self.access_secret);
-        # create api
-        self.api = tweepy.API(auth_handler=self.auth);
+        try:
+            # create ouath handler
+            self.auth = tweepy.OAuthHandler(self.consumer_key, self.consumer_secret);
+            # set access token to oauth handler
+            self.auth.set_access_token(self.access_key, self.access_secret);
+            # create api
+            self.api = tweepy.API(auth_handler=self.auth);
+        except:
+            print ("Could not do oauth. Exit program.")
+            sys.exit(1)
 
     # post single item
     def post(self, str):
@@ -60,11 +65,10 @@ class twitter_handler():
     # Update since_id in config file
     def update_config(self):
         try:
-            self.config.set(self.target_section, 'since_id', str(self.since_id))
-            self.config.write(open(self.otenki_config_file, 'w'))
+            self.config.set(self.target, 'since_id', str(self.since_id))
+            self.config.write(open(self.config_file, 'w'))
         except UnicodeDecodeError:
-            print "Error: Could not write to config: %s" % self.default_config_file
-            sys.exit(1)
+            print ("Error: Could not write to config: %s" % self.config_file)
 
     # Tweet all items in list
     def tweet_posts(self, posts):
@@ -89,8 +93,8 @@ class twitter_handler():
                 break
         return all_tweets
 
-    def get_tweets_cursor(self, screen_name, count=1000):
-        return [x for x in tweepy.Cursor(self.api.user_timeline).items()]
+    def get_tweets_cursor(self, user_id, count=1000):
+        return [x for x in tweepy.Cursor(self.api.user_timeline, user_id=user_id, count=count).items()]
 
     def get_friends(self, user_id):
         return [x for x in tweepy.Cursor(self.api.friends, user_id=user_id).items()]

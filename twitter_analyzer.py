@@ -3,7 +3,7 @@
 import twitter_db
 import twitter_handler
 import statics_plot
-import user_crawler
+import user_crawler_db
 
 
 if __name__ == '__main__':
@@ -11,7 +11,7 @@ if __name__ == '__main__':
     db = twitter_db.twitter_db(db_name)
     twh = twitter_handler.twitter_handler()
     stp = statics_plot.statics_plot()
-    usc = user_crawler.user_crawler('twitter_user_crawler.db')
+    usc = user_crawler_db.user_crawler_db('twitter_user_crawler.db')
 
     """
     db.create_tables()
