@@ -8,7 +8,7 @@ import user_crawler_db
 
 if __name__ == '__main__':
     db_name = 'twitter.db'
-    db = twitter_db.twitter_db(db_name)
+    db = twitter_db.twitter_db()
     twh = twitter_handler.twitter_handler()
     stp = statics_plot.statics_plot()
     usc = user_crawler_db.user_crawler_db('twitter_user_crawler.db')

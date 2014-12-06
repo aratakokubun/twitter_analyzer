@@ -17,6 +17,7 @@ class crawler_test(unittest.TestCase):
 
         user_id = 'no integer type id'
         self.assertRaises(TypeError, self.uc.add_crawl_user, user_id)
+
         user_id = 0
         try:
             self.uc.add_crawl_user(user_id)
@@ -24,7 +25,11 @@ class crawler_test(unittest.TestCase):
         except sqlite3.Error:
             raised = False
         self.assertTrue(raised, "Add user error")
+
         self.assertIsNotNone(self.uc.get_crawl_users(), "Table is empty")
+
+        self.assertEqual(self.uc.get_crawl_users()[0][0], user_id, "Id of the inserted user is wrong")
+
 
 if __name__ == "__main__":
     unittest.main()

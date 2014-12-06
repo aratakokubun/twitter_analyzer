@@ -3,7 +3,7 @@
 import tweepy
 import sys
 import ConfigParser
-
+import time
 
 class twitter_handler():
     config_file = 'twitter.cfg'
@@ -40,7 +40,7 @@ class twitter_handler():
             print ("Could not read config file : %s" % self.config_file)
             sys.exit()
 
-    # Do twitter outhentification
+    # Do twitter oauthentification
     def do_oauth(self):
         try:
             # create ouath handler
@@ -98,3 +98,23 @@ class twitter_handler():
 
     def get_friends(self, user_id):
         return [x for x in tweepy.Cursor(self.api.friends, user_id=user_id).items()]
+
+    def get_followers(self, user_id):
+        return [x for x in tweepy.Cursor(self.api.followers, user_id=user_id).items()]
+
+    def get_friends_divided_pages(self, user_id, limit=100):
+        users = []
+        for items in tweepy.Cursor(self.api.friends, user_id=user_id, count=limit).pages(int(200/limit)):
+            users.extend(items)
+            time.sleep(60)
+        return users
+
+    def get_followers_divided_pages(self, user_id, limit=100):
+        users = []
+        for items in tweepy.Cursor(self.api.followers, user_id=user_id, count=limit).pages(int(200/limit)):
+            users.extend(items)
+            time.sleep(60)
+        return users
+
+    def get_user(self, screen_name):
+        return self.api.get_user(screen_name=screen_name)
